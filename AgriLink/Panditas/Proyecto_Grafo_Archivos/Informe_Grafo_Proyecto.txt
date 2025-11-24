@@ -1,0 +1,19 @@
+==============================
+INFORMACIÓN DEL GRAFO
+==============================
+Tipo de grafo: <class 'networkx.classes.graph.Graph'> (Dirigido y ponderado)
+Número total de nodos: 5698
+Número total de aristas: 5722
+
+Tipo de recorrido aplicado para visualización: Layout de fuerza dirigida (spring_layout)
+Algoritmo de optimización recomendado:
+- Para rutas óptimas: Algoritmo de Dijkstra
+- Para detección de comunidades: Algoritmos de clustering (Louvain)
+
+Top 5 nodos por centralidad de grado:
+ - PUNO: 0.1020
+ - CUSCO: 0.0934
+ - CAJAMARCA: 0.0860
+ - JUNIN: 0.0839
+ - SAN MARTIN: 0.0674
+==============================
