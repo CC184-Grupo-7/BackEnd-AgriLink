@@ -185,31 +185,24 @@ class AlgoritmosService:
         }
     
     def _crear_grafo_para_bellman_ford(self):
-        """Versión que SÍ crea pesos negativos controlados"""
+        """Versión CORREGIDA: crea pesos negativos SIN ciclos infinitos"""
         grafo_temp = self.grafo.copy()
     
-        # Aplicar descuentos y crear pesos negativos controlados
+        # 🎯 ESTRATEGIA: Solo aplicar descuentos, NO crear aristas de retroceso
         for producto, info in self.descuentos_activos.items():
             if info['precio_final'] and producto in grafo_temp:
                 for vecino in list(grafo_temp.neighbors(producto)):
                     if grafo_temp.nodes[vecino].get('tipo') == 'Mercado':
-                        # Aplicar precio con descuento
+                        # Solo aplicar el precio con descuento
                         precio_original = info['precio_original']
                         precio_descuento = info['precio_final']
-                        ahorro = precio_original - precio_descuento
                     
-                        grafo_temp[producto][vecino]['peso'] = precio_descuento
-                    
-                        # 🎯 CREAR PESO NEGATIVO CONTROLADO
-                        if ahorro > 0.1:  # Mínimo ahorro de 0.1
-                            # Crear arista temporal para el ahorro (sin crear ciclos)
-                            nodo_ahorro = f"ahorro_{producto}_{vecino}"
-                            grafo_temp.add_node(nodo_ahorro, tipo="Ahorro")
-                            grafo_temp.add_edge(
-                                vecino, nodo_ahorro,  # Mercado → Ahorro
-                                peso=-ahorro,         # Peso negativo
-                                relacion=f"descuento_{info['descuento_texto']}"
-                            )
+                        if precio_original and precio_descuento < precio_original:
+                            # Aplicar el precio con descuento como peso POSITIVO
+                            grafo_temp[producto][vecino]['peso'] = precio_descuento
+                        
+                            # 🚫 NO crear arista de retroceso para evitar ciclos
+                            # El "ahorro" se refleja automáticamente en el peso reducido
     
         return grafo_temp
     
@@ -243,3 +236,4 @@ class AlgoritmosService:
         }
 
 algoritmos_service = AlgoritmosService()
+
