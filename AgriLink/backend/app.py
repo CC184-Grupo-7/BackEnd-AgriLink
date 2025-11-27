@@ -170,10 +170,73 @@ def nodos_por_tipo(tipo):
     return jsonify({
         "tipo": tipo,
         "total": len(nodos_filtrados),
-        "nodos": nodos_filtrados[:50]  # Primeros 50
+        "nodos": nodos_filtrados[:50]
+    })
+
+# ENDPOINTS PARA DESCUENTOS
+@app.route('/api/algoritmos/descuentos', methods=['GET'])
+def get_descuentos_activos():
+    """Ver todos los descuentos aleatorios generados"""
+    return jsonify(algoritmos_service.obtener_descuentos_activos())
+
+@app.route('/api/algoritmos/descuentos/<producto>', methods=['GET'])
+def get_descuento_producto(producto):
+    """Ver descuento de un producto específico"""
+    descuentos = algoritmos_service.obtener_descuentos_activos()
+    if producto in descuentos['descuentos']:
+        return jsonify({"producto": producto, **descuentos['descuentos'][producto]})
+    return jsonify({"error": "Producto no encontrado o sin descuento"}), 404
+
+@app.route('/api/algoritmos/explorar-con-descuentos/<nodo>', methods=['GET'])
+def explorar_con_descuentos(nodo):
+    """Explorar nodo mostrando información de descuentos"""
+    if nodo not in algoritmos_service.grafo:
+        return jsonify({"error": f"Nodo '{nodo}' no encontrado"})
+    
+    # Información base del nodo
+    conexiones = []
+    for vecino in algoritmos_service.grafo.neighbors(nodo):
+        conexiones.append({
+            "nodo": vecino,
+            "tipo": algoritmos_service.grafo.nodes[vecino].get('tipo', 'Desconocido'),
+            "peso": algoritmos_service.grafo[nodo][vecino].get('peso', 1)
+        })
+    
+    respuesta = {
+        "nodo": nodo,
+        "tipo": algoritmos_service.grafo.nodes[nodo].get('tipo', 'Desconocido'),
+        "conexiones": conexiones,
+        "total_conexiones": len(conexiones)
+    }
+    
+    # AGREGAR INFORMACIÓN DE DESCUENTOS SI ES UN PRODUCTO
+    if algoritmos_service.grafo.nodes[nodo].get('tipo') == 'Producto':
+        descuentos = algoritmos_service.obtener_descuentos_activos()
+        if nodo in descuentos['descuentos']:
+            respuesta["descuento"] = descuentos['descuentos'][nodo]
+    
+    return jsonify(respuesta)
+
+@app.route('/api/algoritmos/pesos-negativos', methods=['GET'])
+def get_pesos_negativos():
+    """Ver los pesos negativos generados por descuentos"""
+    return jsonify(algoritmos_service.obtener_pesos_negativos())
+
+@app.route('/api/algoritmos/info-bellman-ford', methods=['GET'])
+def get_info_bellman_ford():
+    """Información sobre Bellman-Ford con descuentos"""
+    return jsonify({
+        "algoritmo": "Bellman-Ford",
+        "razon_uso": "Los descuentos generan pesos negativos (ahorros)",
+        "como_funciona": [
+            "Precio con descuento -> Peso positivo (costo)",
+            "Ahorro del descuento -> Peso negativo (beneficio)", 
+            "Bellman-Ford optimiza rutas considerando ambos"
+        ],
+        "ejemplo": "Producto → Mercado: 3.08 (precio), Mercado → Producto: -1.32 (ahorro)"
     })
 
 if __name__ == '__main__':
     print("Agrilink Backend iniciado")
-    print("APIs Rest")
+    print("APIs Rest - Con sistema de descuentos aleatorios")
     app.run(debug=True, port=5000)
