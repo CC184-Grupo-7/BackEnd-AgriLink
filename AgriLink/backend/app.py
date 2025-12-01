@@ -54,28 +54,29 @@ def get_resenas_agricultor(agricultor_id):
 # 3. ENDPOINTS DE ALGORITMOS (GRAFO Y COMPARACIÓN)
 # =========================================================================
 
-@app.route('/api/algoritmos/ruta-optima', methods=['GET']) # Mantenemos el método GET
+@app.route('/api/algoritmos/ruta-optima', methods=['GET'])
 def get_ruta_optima():
     """
-    Calcula la ruta óptima (Bellman-Ford).
-    Los parámetros se reciben por URL (query parameters).
+    Compara las rutas óptimas entre dos nodos usando Dijkstra y Bellman-Ford.
+    Los parámetros se esperan ahora como QUERY PARAMS (e.g., ?origen=X&destino=Y).
     """
-    # 🚨 CORRECCIÓN CRUCIAL: Usar request.args.get() para leer parámetros de la URL
+    # Los datos se esperan en los parámetros de consulta (query parameters) de la solicitud GET
     origen = request.args.get('origen')
     destino = request.args.get('destino')
     
-    # 2. Validación básica
+    # Notar que el parámetro 'algoritmo' ya no es necesario aquí.
+
     if not origen or not destino:
-        return jsonify({"error": "Parámetros 'origen' y 'destino' son obligatorios."}), 400
+        return jsonify({"error": "Faltan parámetros 'origen' y 'destino' en la URL (query params)."}), 400
 
     try:
-        # 3. Llamar al servicio
-        # Debes asegurarte que algoritmos_service.ruta_optima ACEPTA estos dos parámetros.
-        resultado = algoritmos_service.comparar_rutas_optimas(origen, destino) 
+        # LLAMADA OBLIGATORIA: Implementación del servicio de comparación de rutas
+        resultado = algoritmos_service.comparar_rutas_optimas(origen, destino)
         return jsonify(resultado)
-        
+
     except Exception as e:
-        return jsonify({"error": "Error al calcular la ruta óptima", "detalle": str(e)}), 500
+        # Aquí puedes añadir más manejo de errores específicos si los hay
+        return jsonify({"error": "Error interno al calcular la ruta óptima", "detalle": str(e)}), 500
 
 @app.route('/api/algoritmos/productos-relacionados/<producto>', methods=['GET'])
 def get_productos_relacionados(producto):
@@ -155,6 +156,8 @@ if __name__ == '__main__':
     # NOTA: Asegúrate de ejecutar 'panda.py' para generar el grafo actualizado 
     # antes de correr la aplicación
     app.run(debug=True, port=5000)
+
+
 
 
 
