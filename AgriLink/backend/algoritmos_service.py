@@ -669,3 +669,4 @@ class AlgoritmosService:
 
 algoritmos_service = AlgoritmosService()
 
+
