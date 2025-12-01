@@ -54,29 +54,39 @@ def get_resenas_agricultor(agricultor_id):
 # 3. ENDPOINTS DE ALGORITMOS (GRAFO Y COMPARACIÓN)
 # =========================================================================
 
-@app.route('/api/algoritmos/ruta-optima', methods=['GET'])
-def get_ruta_optima():
+@app.route('/api/algoritmos/ruta-optima', methods=['POST'])
+def get_ruta_optima_comparada():
     """
-    Compara las rutas óptimas entre dos nodos usando Dijkstra y Bellman-Ford.
-    Los parámetros se esperan ahora como QUERY PARAMS (e.g., ?origen=X&destino=Y).
-    """
-    # Los datos se esperan en los parámetros de consulta (query parameters) de la solicitud GET
-    origen = request.args.get('origen')
-    destino = request.args.get('destino')
+    Calcula y compara la ruta óptima entre Bellman-Ford y Dijkstra, 
+    incluyendo tiempos de ejecución y la justificación de la decisión.
     
-    # Notar que el parámetro 'algoritmo' ya no es necesario aquí.
-
-    if not origen or not destino:
-        return jsonify({"error": "Faltan parámetros 'origen' y 'destino' en la URL (query params)."}), 400
-
+    Espera un cuerpo JSON: {"origen": "ID_NODO_A", "destino": "ID_NODO_B"}
+    """
     try:
-        # LLAMADA OBLIGATORIA: Implementación del servicio de comparación de rutas
+        datos = request.json
+        
+        if not datos:
+            return jsonify({"error": "No se encontraron datos JSON en la solicitud. Asegúrese de usar Content-Type: application/json."}), 400
+            
+        origen = datos.get('origen')
+        destino = datos.get('destino')
+        
+        if not origen or not destino:
+            return jsonify({"error": "Faltan 'origen' o 'destino' en el cuerpo de la solicitud JSON."}), 400
+            
+        # Llama al método del servicio que contiene toda la lógica de comparación
         resultado = algoritmos_service.comparar_rutas_optimas(origen, destino)
+        
+        # Manejo de errores específicos (por ejemplo, nodo no encontrado)
+        if "error" in resultado and resultado.get("error") == "Nodo no encontrado":
+            return jsonify(resultado), 404
+            
         return jsonify(resultado)
 
     except Exception as e:
-        # Aquí puedes añadir más manejo de errores específicos si los hay
-        return jsonify({"error": "Error interno al calcular la ruta óptima", "detalle": str(e)}), 500
+        # Manejo de cualquier error inesperado en el servidor
+        print(f"Error al procesar la ruta óptima: {e}")
+        return jsonify({"error": "Error interno del servidor", "detalle": str(e)}), 500
 
 @app.route('/api/algoritmos/productos-relacionados/<producto>', methods=['GET'])
 def get_productos_relacionados(producto):
@@ -156,6 +166,7 @@ if __name__ == '__main__':
     # NOTA: Asegúrate de ejecutar 'panda.py' para generar el grafo actualizado 
     # antes de correr la aplicación
     app.run(debug=True, port=5000)
+
 
 
 
