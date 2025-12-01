@@ -54,7 +54,7 @@ def get_resenas_agricultor(agricultor_id):
 # 3. ENDPOINTS DE ALGORITMOS (GRAFO Y COMPARACIÓN)
 # =========================================================================
 
-@app.route('/api/algoritmos/ruta-optima', methods=['POST'])
+@app.route('/api/algoritmos/ruta-optima', methods=['GET'])
 def get_ruta_optima_comparada():
     """
     Calcula y compara la ruta óptima entre Bellman-Ford y Dijkstra, 
@@ -166,3 +166,4 @@ if __name__ == '__main__':
     # NOTA: Asegúrate de ejecutar 'panda.py' para generar el grafo actualizado 
     # antes de correr la aplicación
     app.run(debug=True, port=5000)
+
