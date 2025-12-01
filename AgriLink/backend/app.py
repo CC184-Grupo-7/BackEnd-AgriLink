@@ -12,6 +12,47 @@ CORS(app)
 def health_check():
     return jsonify({"status": "active", "service": "AgriLink API"})
 
+@app.route('/api/auth/login', methods=['POST'])
+def login_user():
+    """Simula el inicio de sesión. Devuelve un token mock y la info del agricultor 1."""
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    
+    # En un caso real, verificarías las credenciales con una base de datos.
+    if email and password:
+        # Usamos el agricultor 1 de agricultor_service como usuario logueado
+        user_info = agricultor_service.obtener_agricultor(1)
+        
+        return jsonify({
+            "message": "Login exitoso",
+            "token": "mock-token-12345", 
+            "user": user_info,
+            "rol": "agricultor" 
+        })
+    
+    return jsonify({"error": "Credenciales inválidas (Mock)"}), 401
+
+@app.route('/api/auth/register', methods=['POST'])
+def register_user():
+    """Simula el registro de un nuevo usuario."""
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    
+    if email and password:
+        # En un caso real, guardarías el nuevo usuario en la base de datos.
+        # Por ahora, solo confirmamos el éxito.
+        
+        return jsonify({
+            "message": f"Usuario {email} registrado exitosamente (Mock)",
+            "token": "mock-token-98765", 
+            "user_id": 99,
+            "rol": "comprador" # Podrías redirigir a un perfil de comprador simulado
+        })
+        
+    return jsonify({"error": "Faltan datos de registro (Mock)"}), 400
+
 # =========================================================================
 # 1. ENDPOINTS DE AGRICULTORES (CRUD Y MOCK DATA)
 # =========================================================================
@@ -166,6 +207,7 @@ if __name__ == '__main__':
     # NOTA: Asegúrate de ejecutar 'panda.py' para generar el grafo actualizado 
     # antes de correr la aplicación
     app.run(debug=True, port=5000)
+
 
 
 
