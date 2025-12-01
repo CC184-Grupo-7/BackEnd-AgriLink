@@ -1,0 +1,19 @@
+==============================
+INFORMACIÓN DEL GRAFO
+==============================
+Tipo de grafo: <class 'networkx.classes.digraph.DiGraph'> (Dirigido y ponderado)
+Número total de nodos: 7692
+Número total de aristas: 8795
+
+Tipo de recorrido aplicado para visualización: Layout de fuerza dirigida (spring_layout)
+Algoritmo de optimización recomendado:
+- Para rutas óptimas: Bellman-Ford (por pesos negativos de descuentos)
+- Para detección de comunidades: Algoritmos de clustering (Louvain)
+
+Top 5 nodos por centralidad de grado:
+ - LIMA: 0.1682
+ - TRUJILLO: 0.0283
+ - HUANCAYO: 0.0237
+ - CALLAO: 0.0235
+ - AREQUIPA: 0.0220
+==============================

@@ -1,0 +1,78 @@
+BACKEND AGRILINK - TODOS LOS ENDPOINTS DISPONIBLES
+
+URL BASE: http://localhost:5000
+
+---
+ENDPOINTS DE VERIFICACIÓN
+---
+
+http://localhost:5000/api/health
+- Para: Verificar que el backend está funcionando
+- Devuelve: Estado del servidor
+
+http://localhost:5000/api/algoritmos/metricas
+- Para: Ver estadísticas del grafo de pandas
+- Devuelve: Número de nodos, aristas, densidad del grafo
+
+---
+ENDPOINTS DE AGRICULTORES
+---
+
+http://localhost:5000/api/agricultores
+- Para: Obtener lista de todos los agricultores
+- Devuelve: Array con información de agricultores
+
+http://localhost:5000/api/agricultores/1
+- Para: Obtener información de un agricultor específico
+- Devuelve: Datos detallados del agricultor con ID 1
+
+---
+ENDPOINTS DE PRODUCTOS
+---
+
+http://localhost:5000/api/productos
+- Para: Obtener catálogo completo de productos
+- Devuelve: Array con todos los productos disponibles
+
+http://localhost:5000/api/productos?agricultor_id=1
+- Para: Filtrar productos por agricultor
+- Devuelve: Solo productos del agricultor con ID 1
+
+---
+ENDPOINTS DE ALGORITMOS (PANDAS)
+---
+
+http://localhost:5000/api/algoritmos/ruta-optima?origen=X&destino=Y
+- Para: Calcular ruta más corta entre dos puntos
+- Ejemplo: http://localhost:5000/api/algoritmos/ruta-optima?origen=AgricultorA&destino=MercadoCentral
+- Devuelve: Ruta optimizada y costo total
+
+http://localhost:5000/api/algoritmos/productos-relacionados/NombreProducto
+- Para: Encontrar productos similares o relacionados
+- Ejemplo: http://localhost:5000/api/algoritmos/productos-relacionados/Manzana
+- Devuelve: Lista de productos relacionados
+
+---
+ENDPOINTS ADICIONALES
+---
+
+http://localhost:5000/api/agricultores/1/pedidos
+- Para: Obtener pedidos de un agricultor
+- Devuelve: Lista de pedidos con estados
+
+http://localhost:5000/api/agricultores/1/pedidos?estado=pendiente
+- Para: Filtrar pedidos por estado (pendiente/completado)
+- Devuelve: Solo pedidos con estado específico
+
+http://localhost:5000/api/agricultores/1/resenas
+- Para: Obtener reseñas de un agricultor
+- Devuelve: Lista de reseñas y calificaciones
+
+---
+INSTRUCCIONES DE USO
+---
+
+1. Ejecutar backend: cd backend && python app.py
+2. Abrir navegador y probar cualquier URL de arriba
+3. Todas devuelven JSON - fácil de usar en frontend
+4. Backend debe estar corriendo para que frontend funcione
