@@ -71,7 +71,7 @@ def get_ruta_optima():
     try:
         # 3. Llamar al servicio
         # Debes asegurarte que algoritmos_service.ruta_optima ACEPTA estos dos parámetros.
-        resultado = algoritmos_service.ruta_optima(origen, destino) 
+        resultado = algoritmos_service.comparar_rutas_optimas(origen, destino) 
         return jsonify(resultado)
         
     except Exception as e:
@@ -155,5 +155,6 @@ if __name__ == '__main__':
     # NOTA: Asegúrate de ejecutar 'panda.py' para generar el grafo actualizado 
     # antes de correr la aplicación
     app.run(debug=True, port=5000)
+
 
 
